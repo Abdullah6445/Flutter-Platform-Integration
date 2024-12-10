@@ -17,8 +17,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
@@ -28,17 +26,21 @@ public class MainActivity extends FlutterActivity {
     private BroadcastReceiver timerReceiver;
     private static final String CHANNEL = "com.ab.services/native";
     private static final String TIMER_UPDATED_ACTION = "com.ab.services.TIMER_UPDATED";
+    MethodChannel methodChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         // Register the BroadcastReceiver for timer updates
         timerReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int count = intent.getIntExtra("count", 0);
+                String res = intent.getStringExtra("response");
                 sendCountToFlutter(count); // Send count to Flutter using MethodChannel
+                sendApiResponseToFlutter(res);
             }
         };
         registerReceiver(timerReceiver, new IntentFilter(TIMER_UPDATED_ACTION));
@@ -66,9 +68,10 @@ public class MainActivity extends FlutterActivity {
         @Override
     public void configureFlutterEngine(FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+            methodChannel   = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL);
 
-        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
-                .setMethodCallHandler((call, result) -> {
+
+            methodChannel.setMethodCallHandler((call, result) -> {
                     if (call.method.equals("startService")) {
                         startNativeService();
                         result.success("Service started");
@@ -80,8 +83,11 @@ public class MainActivity extends FlutterActivity {
 
     // Method to send updated count to Flutter
     private void sendCountToFlutter(int count) {
-        new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
-                .invokeMethod("updateCount", count);
+        methodChannel.invokeMethod("updateCount", count);
+    }
+
+    void sendApiResponseToFlutter(String resp){
+        methodChannel.invokeMethod("updateResponse",resp);
     }
 
     // Method to start the foreground service from Flutter

@@ -85,7 +85,7 @@ public class ForeGroundService extends Service {
                 }
 
             }
-        }, 1000, 20000); // Schedule to run every second
+        }, 1000, 10000000); // Schedule to run every second
     }
 
     // Function to hit the API and return the response as a string
@@ -136,6 +136,8 @@ public class ForeGroundService extends Service {
         // Broadcast the updated count to MainActivity
         Intent intent = new Intent("com.ab.services.TIMER_UPDATED");
         intent.putExtra("count", count);
+        intent.putExtra("response" ,response );
+
         sendBroadcast(intent);
     }
 
