@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:platform_via_flutter/user_model/user_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +61,9 @@ class _CounterScreenState extends State<CounterScreen> {
   String? response;
   final NativeService _nativeService = NativeService();
 
+  List<Map<String, dynamic>> decodedData = [];
+  List<UserModel> userModelList = [];
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +77,17 @@ class _CounterScreenState extends State<CounterScreen> {
       (String resss) {
         setState(() {
           response = resss;
+          try {
+            userModelList = userModelFromJson(response!);
+            print("<<<============ user model list ai hai : " +
+                userModelList.toString());
+
+            //   List<dynamic> list = jsonDecode(response!);
+            //   decodedData =
+            //       list.map((e) => Map<String, dynamic>.from(e)).toList();
+          } catch (e) {
+            print("<<<============ exception ai hai : " + e.toString());
+          }
         });
       },
     );
@@ -84,20 +99,21 @@ class _CounterScreenState extends State<CounterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Native Service Counter')),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text('Counter: $counter', style: TextStyle(fontSize: 30)),
-              SizedBox(
-                height: 100,
-              ),
-              Text(response.toString())
-              // Text("dsfsdf" + decodedData["name"][0].toString(),
-              //     style: TextStyle(fontSize: 15)),
-            ],
+      body: Column(
+        children: [
+          Text('Counter: $counter', style: TextStyle(fontSize: 30)),
+          Expanded(
+            child: ListView.builder(
+              itemCount: userModelList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(userModelList[index].name),
+                  subtitle: Text(userModelList[index].phone),
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

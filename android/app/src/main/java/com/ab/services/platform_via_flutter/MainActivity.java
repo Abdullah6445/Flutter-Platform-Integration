@@ -41,6 +41,7 @@ public class MainActivity extends FlutterActivity {
                 String res = intent.getStringExtra("response");
                 sendCountToFlutter(count); // Send count to Flutter using MethodChannel
                 sendApiResponseToFlutter(res);
+
             }
         };
         registerReceiver(timerReceiver, new IntentFilter(TIMER_UPDATED_ACTION));
@@ -89,6 +90,7 @@ public class MainActivity extends FlutterActivity {
     void sendApiResponseToFlutter(String resp){
         methodChannel.invokeMethod("updateResponse",resp);
     }
+
 
     // Method to start the foreground service from Flutter
     private void startNativeService() {
