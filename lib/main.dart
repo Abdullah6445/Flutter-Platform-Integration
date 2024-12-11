@@ -49,6 +49,10 @@ class NativeService {
       }
     });
   }
+
+  void sendApiResponseToFlutter(String addUrl) {
+    platform.invokeMethod("addingApiUrl", addUrl);
+  }
 }
 
 class CounterScreen extends StatefulWidget {
@@ -79,14 +83,13 @@ class _CounterScreenState extends State<CounterScreen> {
           response = resss;
           try {
             userModelList = userModelFromJson(response!);
-            print("<<<============ user model list ai hai : " +
-                userModelList.toString());
+            print("<<<============ user model list ai hai : $userModelList");
 
             //   List<dynamic> list = jsonDecode(response!);
             //   decodedData =
             //       list.map((e) => Map<String, dynamic>.from(e)).toList();
           } catch (e) {
-            print("<<<============ exception ai hai : " + e.toString());
+            print("<<<============ exception ai hai : $e");
           }
         });
       },
@@ -98,10 +101,10 @@ class _CounterScreenState extends State<CounterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Native Service Counter')),
+      appBar: AppBar(title: const Text('Native Service Counter')),
       body: Column(
         children: [
-          Text('Counter: $counter', style: TextStyle(fontSize: 30)),
+          Text('Counter: $counter', style: const TextStyle(fontSize: 30)),
           Expanded(
             child: ListView.builder(
               itemCount: userModelList.length,

@@ -32,10 +32,10 @@ public class ForeGroundService extends Service {
 
     private static final int NOTIFICATION_ID = 1;
     private int count = 0;
+    String response;
     private Timer timer;
     boolean serverIsOn = false;
 
-    String response;
 
     @Override
     public void onCreate() {
@@ -88,7 +88,7 @@ public class ForeGroundService extends Service {
                 }
 
             }
-        }, 1000, 5000); // Schedule to run every second
+        }, 1000, 10000); // Schedule to run every second
     }
 
     // Function to hit the API and return the response as a string
@@ -117,6 +117,7 @@ public class ForeGroundService extends Service {
 
         // If the status is 200, continue with the response
         serverIsOn = true; // Update server status
+
         System.out.println("<<<==========>>>");
         System.out.println("<<<===== server nhi ruka =====>>>");
         System.out.println("<<<==========>>>");
@@ -135,51 +136,6 @@ public class ForeGroundService extends Service {
         return response.toString();
     }
 
-//    private String hitApi(String apiUrl) throws Exception {
-//        URL url = new URL(apiUrl);
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//        connection.setRequestMethod("GET");
-//        connection.setRequestProperty("Content-Type", "application/json");
-//
-//        // Check response code
-//        int status = connection.getResponseCode();
-//        if (status != 200) {
-//
-//            System.out.println("<<<==========>>>");
-//            System.out.println("<<<===== server ruk gya =====>>>");
-//            System.out.println("<<<==========>>>");
-//            serverIsOn = false;
-//
-//
-//
-//            updateNotification();
-//            throw new RuntimeException("Failed : HTTP error code : " + status);
-//        }
-//        else {
-//            serverIsOn = true;
-//            System.out.println("<<<==========>>>");
-//            System.out.println("<<<===== server nhi ruka =====>>>");
-//            System.out.println("<<<==========>>>");
-//
-//            updateNotification();
-//        }
-//        System.out.println("<<<==========>>>");
-//        System.out.println("<<<===== else k bad b chal rha =====>>>");
-//        System.out.println("<<<==========>>>");
-//
-//
-//        // Read the response
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//        StringBuilder response = new StringBuilder();
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            response.append(line);
-//        }
-//        reader.close();
-//
-//        return response.toString();
-//    }
-
     private void stopTimer() {
         if (timer != null) {
             timer.cancel(); // Cancel the timer task
@@ -188,7 +144,9 @@ public class ForeGroundService extends Service {
     }
 
     private void updateNotification() {
-        count++;
+
+        int counttt = count++;
+
         System.out.println("<<<==========>>>");
         System.out.println("<<<===== update notification chal rha =====>>>");
         System.out.println("<<<==========>>>");
@@ -196,7 +154,7 @@ public class ForeGroundService extends Service {
         // Create notification with updated count
         Notification notification = new NotificationCompat.Builder(this, "SERVICE_CHANNEL")
                 .setContentTitle(serverIsOn ? "server is on" : "server is off")
-                .setContentText("Timer: " + count + "\n" + response) // Increment count with each update
+                .setContentText("Timer: " + counttt + "\n" + response) // Increment count with each update
                 .setSmallIcon(R.drawable.launch_background)
                 .build();
 
@@ -206,7 +164,7 @@ public class ForeGroundService extends Service {
 
         // Broadcast the updated count to MainActivity
         Intent intent = new Intent("com.ab.services.TIMER_UPDATED");
-        intent.putExtra("count", count);
+        intent.putExtra("count", counttt);
         intent.putExtra("response" ,response );
 
 

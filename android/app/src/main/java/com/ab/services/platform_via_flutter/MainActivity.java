@@ -39,6 +39,7 @@ public class MainActivity extends FlutterActivity {
             public void onReceive(Context context, Intent intent) {
                 int count = intent.getIntExtra("count", 0);
                 String res = intent.getStringExtra("response");
+
                 sendCountToFlutter(count); // Send count to Flutter using MethodChannel
                 sendApiResponseToFlutter(res);
 
@@ -47,12 +48,12 @@ public class MainActivity extends FlutterActivity {
         registerReceiver(timerReceiver, new IntentFilter(TIMER_UPDATED_ACTION));
 
         // Start the foreground service
-        Intent serviceIntent = new Intent(this, ForeGroundService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
+//        Intent serviceIntent = new Intent(this, ForeGroundService.class);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(serviceIntent);
+//        } else {
+//            startService(serviceIntent);
+//        }
     }
 
     @Override
